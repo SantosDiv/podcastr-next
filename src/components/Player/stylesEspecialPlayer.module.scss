@@ -1,0 +1,60 @@
+.stretchedPlayerContainer {
+  width: 25.4rem;
+  justify-content: space-between;
+
+  transition: 0.5s;
+
+  header {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.stretchedEmptyPlayer {
+  height: 20rem;
+  padding: 4rem;
+  width: 100%;
+}
+
+
+/* Compressend Player */
+.compressedPlayerContainer {
+  width: 4rem; //*
+  justify-content: space-around; //*
+
+  transition: 0.5s;
+
+  header {
+    text-align: center;
+  }
+}
+
+.compressedEmpytPlayer {
+  width: 5rem; //*
+  height: 5rem; //*
+
+  transition: 0.5s;
+  strong { //*
+    font-size: 0.5rem; //*
+  } //*
+}
+
+.compressedProgress {
+  flex-direction: column; //*
+  gap: 0.5rem; //*
+}
+
+.compressendSlider {
+  display: none;
+}
+
+.compressedButtons {
+  flex-direction: column; //*
+  transition: 0.5s;
+}
+
+.animationArrowLeft {
+  transform: rotate(180deg);
+  transition: transform 0.5s;
+}
