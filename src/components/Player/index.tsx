@@ -1,9 +1,33 @@
-import { useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { PlayerContext } from '../../contexts/playerContext';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import stylesEPlayer from './stylesEspecialPlayer.module.scss';
 import styles from './styles.module.scss';
 
 export function Player() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   const [toggle, setToggle] = useState(false);
+  const {
+    episodeList,
+    currentEpisodeIndex,
+    isPlaying,
+    togglePlay,
+    setPlayingState,
+  } = useContext(PlayerContext);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying])
+
+  const episode = episodeList[currentEpisodeIndex];
 
   const sizePlayerContainer = !toggle
     ? stylesEPlayer.compressedPlayerContainer
@@ -36,33 +60,72 @@ export function Player() {
         <strong className={styles.strong}>Tocando agora</strong>
       </header>
 
-      <div className={`${styles.empytPlayer} ${sizeEmptyPlayer}`}>
-        <strong className={styles.strong}>Selecione um podcast para ouvir!</strong>
-      </div>
+      { episode ? (
+        <div className={stylesEPlayer.stretchedCurrentPlayer}>
+          <Image
+            width={592}
+            height={592}
+            src={episode.thumbnail}
+            objectFit="cover"
+          />
+          <strong> {episode.title} </strong>
+          <span>{episode.members}</span>
+        </div>
+      ) : (
+        <div className={`${styles.empytPlayer} ${sizeEmptyPlayer}`}>
+          <strong className={styles.strong}>Selecione um podcast para ouvir!</strong>
+        </div>
+      ) }
 
       <footer className={styles.footerPlayer}>
         <div className={`${styles.progress} ${compressedProgress}`}>
           <span>00:00</span>
           <div className={`${styles.slider} ${compressendSlider}`}>
-            <div className={styles.empytSlider} />
+            { episode ? (
+              <Slider
+                trackStyle={{backgroundColor: '#04d361'}}
+                railStyle={{backgroundColor: '#9f75ff'}}
+                handleStyle={{borderColor: '#04d361', borderWidth: 4}}
+              />
+            ) : (
+              <div className={styles.empytSlider} />
+            ) }
           </div>
           <span>00:00</span>
         </div>
 
+        { episode && (
+          <audio
+            src={episode.url}
+            ref={audioRef}
+            autoPlay
+            onPlay={() => {setPlayingState(true)}}
+            onPause={() => {setPlayingState(false)}}
+          />
+        ) }
+
         <div className={`${styles.buttons} ${compressedButtons}`}>
-          <button>
+          <button type="button" disabled={!episode}>
             <img src="/shuffle.svg" alt="Embaralhar" />
           </button>
-          <button>
+          <button type="button" disabled={!episode}>
             <img src="/play-previous.svg" alt="Tocar anterior" />
           </button>
-          <button className={styles.playButton}>
-            <img src="/play.svg" alt="Tocar" />
+          <button
+            type="button"
+            className={styles.playButton}
+            disabled={!episode}
+            onClick={togglePlay}
+          >
+          { isPlaying
+              ? <img src="/pause.svg" alt="Pausar" />
+              : <img src="/play.svg" alt="Tocar" />
+            }
           </button>
-          <button>
+          <button type="button" disabled={!episode}>
             <img src="/play-next.svg" alt="Tocar posterior" />
           </button>
-          <button>
+          <button type="button" disabled={!episode}>
             <img src="/repeat.svg" alt="Repetir" />
           </button>
         </div>

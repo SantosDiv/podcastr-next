@@ -17,6 +17,31 @@
   width: 100%;
 }
 
+.stretchedCurrentPlayer {
+  text-align: center;
+
+  img {
+    border-radius: 1.5rem;
+    height: 20rem;
+    padding: 4rem;
+    width: 100%;
+  }
+
+  strong {
+    display: block;
+    margin-top: 2rem;
+    font: 600 1.25rem Lexend, sans-serif;
+    line-height: 1.75rem;
+  }
+
+  span {
+    display: block;
+    margin-top: 1rem;
+    opacity: 0.6;
+    line-height: 1.5rem;
+  }
+}
+
 
 /* Compressend Player */
 .compressedPlayerContainer {

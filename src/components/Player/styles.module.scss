@@ -69,6 +69,7 @@
     background: transparent;
     border: 0;
     font-size: 0;
+    transition: filter 0.5s;
 
     &.playButton {
       background: var(--purple-400);
@@ -77,8 +78,12 @@
       border-radius: 1rem;
     }
 
-    &:hover {
-      opacity: 0.4;
+    &:hover:not(:disabled) {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      cursor: default;
     }
   }
 }
