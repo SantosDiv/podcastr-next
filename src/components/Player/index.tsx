@@ -1,6 +1,6 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { PlayerContext } from '../../contexts/playerContext';
+import { usePlayer } from '../../contexts/playerContext';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import stylesEPlayer from './stylesEspecialPlayer.module.scss';
@@ -16,7 +16,11 @@ export function Player() {
     isPlaying,
     togglePlay,
     setPlayingState,
-  } = useContext(PlayerContext);
+    playNext,
+    playPrevious,
+    hasNext,
+    hasPrevious,
+  } = usePlayer();
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -37,10 +41,10 @@ export function Player() {
     ? stylesEPlayer.compressedEmpytPlayer
     : stylesEPlayer.stretchedEmptyPlayer;
 
-  const compressedProgress = !toggle && stylesEPlayer.compressedProgress;
-  const compressendSlider = !toggle && stylesEPlayer.compressendSlider;
-  const compressedButtons = !toggle && stylesEPlayer.compressedButtons;
-  const animationArrowLeft = toggle && stylesEPlayer.animationArrowLeft;
+  const compressedProgress = !toggle ? stylesEPlayer.compressedProgress : undefined; // Recomendação do react
+  const compressendSlider = !toggle ? stylesEPlayer.compressendSlider : undefined;
+  const compressedButtons = !toggle ? stylesEPlayer.compressedButtons : undefined;
+  const animationArrowLeft = toggle ? stylesEPlayer.animationArrowLeft : undefined;
 
   return (
     <div className={`${styles.playerContainer} ${sizePlayerContainer}`}>
@@ -108,7 +112,7 @@ export function Player() {
           <button type="button" disabled={!episode}>
             <img src="/shuffle.svg" alt="Embaralhar" />
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
             <img src="/play-previous.svg" alt="Tocar anterior" />
           </button>
           <button
@@ -122,7 +126,7 @@ export function Player() {
               : <img src="/play.svg" alt="Tocar" />
             }
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasNext} onClick={playNext}>
             <img src="/play-next.svg" alt="Tocar posterior" />
           </button>
           <button type="button" disabled={!episode}>
