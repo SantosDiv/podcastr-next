@@ -51,8 +51,8 @@ import { api } from '../services/api';
 import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR'
 import { convertDurationToTimeString } from '../utils/covertDurationToTimeString';
-import styles from './home.module.scss';
 import { usePlayer } from '../contexts/playerContext';
+import styles from './home.module.scss';
 
 type Episodes = {
   id: string,
@@ -72,7 +72,7 @@ type HomeProps = {
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 
-  const { playList } = usePlayer();
+  const { playList, isOpenPlayContainer } = usePlayer();
 
   const episodeList = [...latestEpisodes, ...allEpisodes];
 
@@ -88,13 +88,15 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
           { latestEpisodes.map((episode, index) => {
             return (
               <li key={ episode.id }>
-                <Image
-                  width={192}
-                  height={192}
-                  src={ episode.thumbnail }
-                  alt={ episode.title }
-                  objectFit="cover"
-                />
+                { !isOpenPlayContainer &&
+                  <Image
+                    width={192}
+                    height={192}
+                    src={ episode.thumbnail }
+                    alt={ episode.title }
+                    objectFit="cover"
+                  />
+                }
 
                 <div className={ styles.episodeDetails }>
                   <Link href={`/episodes/${episode.id}`}>

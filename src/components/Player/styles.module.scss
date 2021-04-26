@@ -1,5 +1,4 @@
 .playerContainer {
-  padding: 3rem 4rem;
   height: 100vh;
 
   background-color: var(--purple-500);
@@ -39,6 +38,7 @@
 .progress {
   display: flex;
   align-items: center;
+  gap: 1rem;
 
   span {
     display: inline-block;
@@ -62,7 +62,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   gap: 1.5rem;
 
   button {

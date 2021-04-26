@@ -9,8 +9,6 @@ import { convertDurationToTimeString } from '../../utils/covertDurationToTimeStr
 
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  const [toggle, setToggle] = useState(false);
   const [progress, setProgress] = useState(0)
   const {
     episodeList,
@@ -27,6 +25,8 @@ export function Player() {
     toggleLoop,
     toggleShuffling,
     isShuffling,
+    toggleSidePlay,
+    isOpenPlayContainer,
   } = usePlayer();
 
   useEffect(() => {
@@ -61,25 +61,29 @@ export function Player() {
 
   const episode = episodeList[currentEpisodeIndex];
 
-  const sizePlayerContainer = !toggle
+  const sizePlayerContainer = !isOpenPlayContainer
     ? stylesEPlayer.compressedPlayerContainer
     : stylesEPlayer.stretchedPlayerContainer;
 
-  const sizeEmptyPlayer = !toggle
+  const sizeEmptyPlayer = !isOpenPlayContainer
     ? stylesEPlayer.compressedEmpytPlayer
     : stylesEPlayer.stretchedEmptyPlayer;
 
-  const compressedProgress = !toggle ? stylesEPlayer.compressedProgress : undefined; // Recomendação do react
-  const compressendSlider = !toggle ? stylesEPlayer.compressendSlider : undefined;
-  const compressedButtons = !toggle ? stylesEPlayer.compressedButtons : undefined;
-  const animationArrowLeft = toggle ? stylesEPlayer.animationArrowLeft : undefined;
+  const styleCurrentPlayer = !isOpenPlayContainer
+   ? stylesEPlayer.comporessedCurrentPlayer
+   : stylesEPlayer.stretchedCurrentPlayer;
+
+  const compressedProgress = !isOpenPlayContainer ? stylesEPlayer.compressedProgress : undefined; // Recomendação do react
+  const compressendSlider = !isOpenPlayContainer ? stylesEPlayer.compressendSlider : undefined;
+  const compressedButtons = !isOpenPlayContainer ? stylesEPlayer.compressedButtons : undefined;
+  const animationArrowLeft = isOpenPlayContainer ? stylesEPlayer.animationArrowLeft : undefined;
 
   return (
     <div className={`${styles.playerContainer} ${sizePlayerContainer}`}>
       <button
         type="button"
         className={styles.openPlayer}
-        onClick={() => setToggle(!toggle)}
+        onClick={() => toggleSidePlay()}
       >
         <img
           src="/arrow-left.svg"
@@ -93,15 +97,15 @@ export function Player() {
       </header>
 
       { episode ? (
-        <div className={stylesEPlayer.stretchedCurrentPlayer}>
+        <div className={styleCurrentPlayer}>
           <Image
             width={592}
             height={592}
             src={episode.thumbnail}
             objectFit="cover"
           />
-          <strong> {episode.title} </strong>
-          <span>{episode.members}</span>
+          <p> {episode.title} </p>
+          <p>{episode.members}</p>
         </div>
       ) : (
         <div className={`${styles.empytPlayer} ${sizeEmptyPlayer}`}>
