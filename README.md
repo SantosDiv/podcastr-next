@@ -18,4 +18,5 @@ A aplicação se trata de uma plataforma de podcasts sobre tecnologia. Consumind
 - React;
 - Typescript;
 - Html;
+- Sass;
 - CSS;
