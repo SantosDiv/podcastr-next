@@ -5,17 +5,20 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import stylesEPlayer from './stylesEspecialPlayer.module.scss';
 import styles from './styles.module.scss';
+import { convertDurationToTimeString } from '../../utils/covertDurationToTimeString';
 
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [toggle, setToggle] = useState(false);
+  const [progress, setProgress] = useState(0)
   const {
     episodeList,
     currentEpisodeIndex,
     isPlaying,
     togglePlay,
     setPlayingState,
+    clearPlayerState,
     playNext,
     playPrevious,
     hasNext,
@@ -33,7 +36,28 @@ export function Player() {
     } else {
       audioRef.current.pause();
     }
-  }, [isPlaying])
+  }, [isPlaying]);
+
+  const setupProgressListener =() => {
+    audioRef.current.currentTime = 0;
+
+    audioRef.current.addEventListener('timeupdate', () => {
+      setProgress(Math.floor(audioRef.current.currentTime));
+    });
+  }
+
+  const handleSeek = (amount: number) => {
+    audioRef.current.currentTime = amount;
+    setProgress(amount);
+  }
+
+  const handleEpisodeEnded = () => {
+    if (hasNext) {
+      playNext();
+    } else {
+      clearPlayerState();
+    }
+  }
 
   const episode = episodeList[currentEpisodeIndex];
 
@@ -87,19 +111,22 @@ export function Player() {
 
       <footer className={styles.footerPlayer}>
         <div className={`${styles.progress} ${compressedProgress}`}>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(progress)}</span>
           <div className={`${styles.slider} ${compressendSlider}`}>
             { episode ? (
               <Slider
                 trackStyle={{backgroundColor: '#04d361'}}
                 railStyle={{backgroundColor: '#9f75ff'}}
                 handleStyle={{borderColor: '#04d361', borderWidth: 4}}
+                max={episode.duration}
+                value={progress}
+                onChange={handleSeek}
               />
             ) : (
               <div className={styles.empytSlider} />
             ) }
           </div>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span>
         </div>
 
         { episode && (
@@ -110,6 +137,8 @@ export function Player() {
             loop={isLooping}
             onPlay={() => {setPlayingState(true)}}
             onPause={() => {setPlayingState(false)}}
+            onLoadedMetadata={() => setupProgressListener()}
+            onEnded={handleEpisodeEnded}
           />
         ) }
 
